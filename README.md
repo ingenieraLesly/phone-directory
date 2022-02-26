@@ -1,2 +1,2 @@
 # phone-directory
-Create contact, List, update, delete, found phone number. CRUD contacts.
+Create contact, List, update, delete, search contact. CRUD contacts.
