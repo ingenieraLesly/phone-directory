@@ -9,11 +9,19 @@ router.post(
   contactMidd.validContact,
   contactMidd.existingContact,
   contactMidd.maxCapacity,
-  controller.addContact
+  controller.addContact,
+  controller.isFull
 );
 router.get("/list", controller.listContact);
 router.get("/isFull", controller.isFull);
 router.get("/search/:name?", controller.searchContact);
 router.delete("/delete/:_id", controller.deleteContact);
+router.put(
+  "/update",
+  contactMidd.validContact,
+  contactMidd.validId,
+  contactMidd.existingContact,
+  controller.updateContact
+);
 
 export default router;

@@ -1,4 +1,5 @@
 import Contact from "../models/contact.js";
+import mongoose from "mongoose";
 
 const validContact = (req, res, next) => {
   if (!req.body.name)
@@ -9,10 +10,22 @@ const validContact = (req, res, next) => {
   next();
 };
 
+const validId = async (req, res, next) => {
+  let isIdValid;
+
+  if (req.params["_id"])
+    isIdValid = mongoose.Types.ObjectId.isValid(req.params["_id"]);
+
+  if (req.body._id) isIdValid = mongoose.Types.ObjectId.isValid(req.body._id);
+
+  return !isIdValid ? res.status(400).send({ message: "Invalid id" }) : next();
+};
+
 const existingContact = async (req, res, next) => {
   const contact = await Contact.findOne({ name: req.body.name });
+ 
 
-  if (contact)
+  if (contact && contact._id != req.body._id)
     return res
       .status(400)
       .send({ message: "This contact is already registered" });
@@ -27,4 +40,4 @@ const maxCapacity = async (req, res, next) => {
   next();
 };
 
-export default { validContact, existingContact, maxCapacity };
+export default { validContact, validId, existingContact, maxCapacity };

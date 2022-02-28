@@ -1,3 +1,4 @@
+import { response } from "express";
 import Contact from "../models/contact.js";
 
 const addContact = async (req, res) => {
@@ -7,9 +8,13 @@ const addContact = async (req, res) => {
     mobile: req.body.mobile,
   });
 
+  const capacity = await Contact.find();
+
   const result = await schema.save();
   return result
-    ? res.status(201).send({ message: "Contact registered" })
+    ? res.status(201).send({
+        message: `Contact registered. ${9 - capacity.length} spaces left`,
+      })
     : res.status(500).send({ message: "Failed to register contact" });
 };
 
@@ -49,10 +54,25 @@ const isFull = async (req, res) => {
       .send({ message: `You can add ${10 - capacity.length} Contacts` });
   }
 };
+
+const updateContact = async (req, res) => {
+  const result = await Contact.findByIdAndUpdate(req.body._id, {
+    // _id: req.body._id,
+    name: req.body.name,
+    phone: req.body.phone,
+    mobile: req.body.mobile,
+  });
+
+  return result
+    ? res.status(200).send({ message: `Contact ${req.body.name} updated successfully` })
+    : res.status(500).send({ message: "Failed to update contact" });
+};
+
 export default {
   addContact,
   listContact,
   searchContact,
   deleteContact,
   isFull,
+  updateContact,
 };
